@@ -1,5 +1,5 @@
 # obs-tools
-Just a group of tool to use with your OBS streaming setup.
+Just a group of tools to use with your OBS streaming setup.
 
 # Tools included:
 
