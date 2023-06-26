@@ -5,19 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Countdown Timer</title>
+    <link href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/base.css" />
     <link rel="stylesheet" href="/css/countdown.css" />
   </head>
   <body>
     <main>
-        <h1>Select from the following list of tools:</h1>  
-        <ul aria-label="OBS Tools">
-          <li>
-            <a href="/countdown">Countdown Timer</a>
-          </li>
-        </ul>
+        <h1 class="sr-only">Stream Countdown</h1>
+        <p id="the-timer">
+          <span>Timer!</span>
+        </p>
     </main>
 
-	  <!-- <script src="index.js"></script> -->
+    <aside id="the-controls">
+      <h2>Settings</h2>
+
+      <form>
+        <div class="even">
+          <label>
+            Hours:
+            <input class="hours" type="number" />
+          </label>
+          <label>
+            Minutes:
+            <input class="minutes" type="number" />
+          </label>
+          <label>
+            Seconds:
+            <input class="seconds" type="number" />
+          </label>
+        </div>
+
+        <div class="uneven">
+          <label>
+            Ready Text:
+            <input class="ready-text" type="text" />
+          </label>
+        </div>
+
+        <div class="uneven">
+          <button type="submit">Start Countdown</button>
+          <button type="submit">Reset</button>
+        </div>
+      </form>
+    </aside>
+
+	  <script src="/js/countdown.js"></script>
   </body>
 </html>

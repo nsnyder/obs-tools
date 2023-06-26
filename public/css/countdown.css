@@ -1,4 +1,49 @@
 /* Setup unique variables to this page. */
 :root {
-  /* No unique variables yet. */
+  --bg-page: #1cd500;
+  --font-color: #fff;
+}
+
+main {
+  height: 100%;
+}
+
+#the-timer {
+  font-size: calc(4 * var(--base-font-size));
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Design the page controls. */
+#the-controls {
+  position: fixed;
+  bottom: var(--base-spacing);
+  left: var(--base-spacing);
+  border-radius: var(--base-spacing);
+  padding: var(--base-spacing);
+
+  background-color: #fff;
+  color: #000;
+  min-width: var(--size-md);
+}
+
+#the-controls form>*:not(:first-child) {
+  padding-top: calc(0.5 * var(--base-spacing));
+}
+
+#the-controls .even {
+  display: flex;
+}
+
+/* Give the elements even width and some padding. */
+#the-controls .even label {
+  flex: 1;
+  padding: 0 calc(0.5 * var(--base-spacing));
+}
+
+#the-controls .uneven {
+  padding: 0 calc(0.5 * var(--base-spacing));
 }
