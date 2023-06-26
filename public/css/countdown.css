@@ -30,6 +30,23 @@ main {
   min-width: var(--size-md);
 }
 
+#the-controls .header {
+  display: flex;
+}
+
+#the-controls .header h2 {
+  flex-grow: 1;
+}
+
+#the-controls .header .visibility-toggle {
+  padding-right: calc(0.5 * var(--base-spacing));
+}
+
+#the-controls .header .visibility-toggle {
+  margin-right: calc(0.5 * var(--base-spacing));
+  align-self: baseline;
+}
+
 #the-controls form>*:not(:first-child) {
   padding-top: calc(0.5 * var(--base-spacing));
 }
@@ -46,4 +63,13 @@ main {
 
 #the-controls .uneven {
   padding: 0 calc(0.5 * var(--base-spacing));
+}
+
+#the-controls.hide-until-hover {
+  opacity: 0;
+  transition: all ease-in-out 200ms;
+}
+
+#the-controls.hide-until-hover:hover {
+  opacity: 1;
 }

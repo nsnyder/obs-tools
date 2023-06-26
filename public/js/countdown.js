@@ -102,8 +102,6 @@ const handleCountdownSubmit = () => {
       params.toString()
   );
 
-  // [WIP]: Add and read query params.
-
   const dateTo = addSeconds(addMinutes(addHours(new Date(), hours), minutes), seconds);
 
   countdownInterval = setInterval(() => {
@@ -149,6 +147,20 @@ const bindFormHandlers = () => {
     event.preventDefault();
     
     handleCountdownSubmit();
+  });
+
+  document.querySelector('#the-controls .visibility-toggle').addEventListener('click', () => {
+    const controlContainer = document.querySelector('#the-controls');
+
+    const visibilityClass = 'hide-until-hover';
+    const formIsHidden = controlContainer.classList.contains(visibilityClass);
+    if (formIsHidden) {
+      controlContainer.classList.remove(visibilityClass);
+      controlContainer.querySelector('.visibility-toggle').textContent = 'Show Always';
+    } else {
+      controlContainer.classList.add(visibilityClass);
+      controlContainer.querySelector('.visibility-toggle').textContent = 'Hide Until Hover';
+    }
   });
 };
 
