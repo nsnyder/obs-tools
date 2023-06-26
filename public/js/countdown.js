@@ -62,16 +62,46 @@ const toInteger = number => {
 // Application logic starts here.
 // Ideally, the above would be extracted to a helper file.
 
-const renderCountdown = (dateFrom, dateTo, readyText) => {
+/**
+ * 
+ * @param {Date} dateFrom Date counting down from (probably "now").
+ * @param {*} dateTo Date counting down to.
+ * @param {*} readyText Text to show if the countdown date has arrived.
+ * @param {*} shouldShowHours Whether to show hours, even if zero.
+ * @param {*} shouldShowMinutes Whether to show minutes, even if zero.
+ * @returns 
+ */
+const renderCountdown = (dateFrom, dateTo, readyText, shouldShowHours, shouldShowMinutes) => {
   if (isAfter(dateFrom, dateTo) && !!readyText) {
     return readyText;
   }
 
-  const hoursString = hoursUntil(dateFrom, dateTo).toString().padStart(2, '0');
-  const minutesString = minutesUntil(dateFrom, dateTo).toString().padStart(2, '0');
-  const secondsString = secondsUntil(dateFrom, dateTo).toString().padStart(2, '0');
+  const countHoursUntil = hoursUntil(dateFrom, dateTo);
+  const countMinutesUntil = minutesUntil(dateFrom, dateTo);
+  const countSecondsUntil = secondsUntil(dateFrom, dateTo);
+  const hoursString = countHoursUntil.toString().padStart(2, '0');
+  const minutesString = countMinutesUntil.toString().padStart(2, '0');
+  const secondsString = countSecondsUntil.toString().padStart(2, '0');
 
-  return `${ hoursString }:${ minutesString }:${ secondsString }`;
+  let renderString = '';
+  if (shouldShowHours || countHoursUntil > 0) {
+    renderString += `${ hoursString }:`;
+  }
+  if (shouldShowMinutes || countMinutesUntil > 0) {
+    renderString += `${ minutesString }:`
+  }
+
+  // If we shouldn't be showing hours or minutes, just do a seconds count.
+  // Don't leading pad this one.
+  if (!renderString) {
+    return countSecondsUntil.toString() + ' seconds';
+  }
+
+  return renderString + secondsString.toString();
+};
+
+const handleReadyTextChange = readyText => {
+  document.querySelector('#the-timer>span').textContent = readyText || 'Countdown....';
 };
 
 const handleCountdownSubmit = () => {
@@ -104,11 +134,16 @@ const handleCountdownSubmit = () => {
 
   const dateTo = addSeconds(addMinutes(addHours(new Date(), hours), minutes), seconds);
 
+  const hasHours = hoursUntil(new Date(), dateTo) > 0;
+  const hasMinutes = minutesUntil(new Date(), dateTo) > 0;
+
   countdownInterval = setInterval(() => {
     const timeString = renderCountdown(
       new Date(),
       dateTo,
-      readyText
+      readyText,
+      hasHours,
+      hasMinutes
     );
 
     document.querySelector('#the-timer>span').textContent = timeString;
@@ -125,6 +160,8 @@ const initializeForm = () => {
   const seconds = Math.max(toInteger(params.get('seconds')), 0);
 
   const readyText = params.get('ready-text') || '';
+
+  handleReadyTextChange(readyText);
 
   form.querySelector('[name="hours"]').value = hours;
   form.querySelector('[name="minutes"]').value = minutes;
@@ -161,6 +198,10 @@ const bindFormHandlers = () => {
       controlContainer.classList.add(visibilityClass);
       controlContainer.querySelector('.visibility-toggle').textContent = 'Hide Until Hover';
     }
+  });
+
+  document.querySelector('#the-controls [name="ready-text"]').addEventListener('input', event => {
+    handleReadyTextChange(event.target.value);
   });
 };
 
