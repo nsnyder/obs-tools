@@ -59,6 +59,9 @@ const toInteger = number => {
   return Number.parseInt(number || 0).toFixed(0);
 };
 
+// Application logic starts here.
+// Ideally, the above would be extracted to a helper file.
+
 const renderCountdown = (dateFrom, dateTo, readyText) => {
   if (isAfter(dateFrom, dateTo) && !!readyText) {
     return readyText;
@@ -71,8 +74,65 @@ const renderCountdown = (dateFrom, dateTo, readyText) => {
   return `${ hoursString }:${ minutesString }:${ secondsString }`;
 };
 
-// Application logic starts here.
-// Ideally, the above would be extracted to a helper file.
+const handleCountdownSubmit = () => {
+  stopCountdown();
+
+  const form = document.querySelector('#the-controls>form');
+    
+  const hours = Math.max(toInteger(form.querySelector('[name="hours"]').value), 0);
+  const minutes = Math.max(toInteger(form.querySelector('[name="minutes"]').value), 0);
+  const seconds = Math.max(toInteger(form.querySelector('[name="seconds"]').value), 0);
+
+  const readyText = form.querySelector('[name="ready-text"]').value;
+
+  const params = new URLSearchParams({
+    hours: Math.max(toInteger(form.querySelector('[name="hours"]').value), 0),
+    minutes: Math.max(toInteger(form.querySelector('[name="minutes"]').value), 0),
+    seconds: Math.max(toInteger(form.querySelector('[name="seconds"]').value), 0),
+    "ready-text": form.querySelector('[name="ready-text"]').value,
+  });
+
+  // Set the URL params so that these persist on reloads.
+  window.history.replaceState(
+    {},
+    '',
+    window.location.origin +
+      window.location.pathname +
+      '?' +
+      params.toString()
+  );
+
+  // [WIP]: Add and read query params.
+
+  const dateTo = addSeconds(addMinutes(addHours(new Date(), hours), minutes), seconds);
+
+  countdownInterval = setInterval(() => {
+    const timeString = renderCountdown(
+      new Date(),
+      dateTo,
+      readyText
+    );
+
+    document.querySelector('#the-timer>span').textContent = timeString;
+  }, 100);
+};
+
+const initializeForm = () => {
+  const params = new URLSearchParams(document.location.search);
+
+  const form = document.querySelector('#the-controls>form');
+
+  const hours = Math.max(toInteger(params.get('hours')), 0);
+  const minutes = Math.max(toInteger(params.get('minutes')), 0);
+  const seconds = Math.max(toInteger(params.get('seconds')), 0);
+
+  const readyText = params.get('ready-text') || '';
+
+  form.querySelector('[name="hours"]').value = hours;
+  form.querySelector('[name="minutes"]').value = minutes;
+  form.querySelector('[name="seconds"]').value = seconds;
+  form.querySelector('[name="ready-text"]').value = readyText;
+};
 
 let countdownInterval;
 const stopCountdown = () => {
@@ -87,33 +147,16 @@ const bindFormHandlers = () => {
   // Begin the countdown listener.
   form.addEventListener('submit', event => {
     event.preventDefault();
-    stopCountdown();
     
-    const hours = Math.max(toInteger(form.querySelector('[name="hours"]').value), 0);
-    const minutes = Math.max(toInteger(form.querySelector('[name="minutes"]').value), 0);
-    const seconds = Math.max(toInteger(form.querySelector('[name="seconds"]').value), 0);
-
-    const readyText = form.querySelector('[name="ready-text"]').value;
-
-    // [WIP]: Add and read query params.
-
-    const dateTo = addSeconds(addMinutes(addHours(new Date(), hours), minutes), seconds);
-
-    countdownInterval = setInterval(() => {
-      const timeString = renderCountdown(
-        new Date(),
-        dateTo,
-        readyText
-      );
-
-      document.querySelector('#the-timer>span').textContent = timeString;
-    }, 100);
+    handleCountdownSubmit();
   });
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   // Define the destination time.
   bindFormHandlers();
+
+  initializeForm();
 });
 
 document
